@@ -2,7 +2,7 @@
 
 Reference：[Dribbble](https://dribbble.com/tags/shopping_cart)
 
-Link：
+Link：[Shopping Cart UI Demo](https://maydayxi.github.io/Shopping-Cart-UI/)
 
 ### Screen Shot
 

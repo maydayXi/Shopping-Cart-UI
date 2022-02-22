@@ -519,3 +519,176 @@ body {
 	cursor: pointer;
 	user-select: none;
 }
+
+/* Bill */
+#Bill {
+	list-style-type: none;
+	padding: 0 10px;
+	font-size: 14px;
+	margin: 0 -2rem;
+	text-align: left;
+}
+
+#Bill li {
+	display: inline-block;
+	width: 100%;
+	border-top: 1px solid var(--Chatelle);
+	border-bottom: 1px solid var(--Chatelle);
+	padding: 10px .5rem;
+	font-size: 0;
+}
+
+#Bill span {
+	display: inline-block;
+	font-size: 1rem;
+}
+
+#Bill span.num {
+	width: 5%;
+}
+
+#Bill span.product {
+	width: 40%;
+	text-align: left;
+	font-size: 13px;
+	color: var(--Chatelle);
+}
+
+#Bill span.cal,
+#Bill span.sublabel,
+#Bill span.subtotal {
+	color: var(--Tangerine);
+	font-weight: 900;
+}
+
+#Bill span.cal {
+	width: 55%;
+	text-align: right;
+}
+
+#Bill span.sublabel {
+	width: 50%;
+}
+
+#Bill span.subtotal {
+	text-align: right;
+	width: 50%;
+}
+
+#Bill li.total {
+	color: var(--Tangerine);
+	font-weight: 900;
+	padding: 10px .5rem;
+	font-size: 1rem;
+
+	display: flex;
+	justify-content: flex-end;
+	border-top: 1px solid var(--Chatelle);
+	border-bottom: 1px solid var(--Chatelle);
+}
+
+/* Guideline */
+#guideline {
+	width: 100%;
+	height: 300px;
+	overflow: hidden;
+	position: relative;
+}
+
+#guideline .wrap,
+#guideline div.item {
+	display: inline-block;
+}
+
+#guideline .wrap {
+	width: 100%;
+	left: 0;
+	font-size: 0;
+	white-space: nowrap;
+	transition: all 1s;
+}
+
+#guideline .wrap .row {
+	width: 100%;
+	left: 0;
+	position: absolute;
+	top: 50%;
+	display: flex;
+	justify-content: space-between;
+	transition: all 1s;
+}
+
+#guideline i {
+	width: 50%;
+	font-size: 2rem;
+	display: inline-block;
+	z-index: 5;
+	color: var(--Tangerine);
+
+	cursor: pointer;
+	user-select: none;
+}
+
+#guideline #Prev {
+	text-align: left;
+}
+
+#guideline #Next {
+	text-align: right;
+}
+
+#guideline div.item {
+	width: 100%;
+	text-align: center;
+}
+
+#guideline .subtitle {
+	margin: 0;
+	margin-bottom: 0.2rem;
+	font-weight: bold;
+	font-size: 1.2rem;
+}
+
+#guideline div.item p {
+	margin: 0.3rem 0;
+	font-size: 1rem;
+	white-space: normal;
+}
+
+#guideline img {
+	width: 50%;
+}
+
+/* Sweet alert */
+.swal2-modal {
+	padding: 0;
+}
+
+#swal-header, 
+#swal-content {
+	padding: 0;
+}
+
+.swal2-icon {
+	font-size: 0.6rem;
+	font-weight: bold;
+}
+
+.swal2-header,
+.swal2-content {
+	margin: 0 -1.6rem;
+}
+
+#swal2-title {
+	margin-bottom: 0;
+}
+
+#swal2-title h1 {
+	margin: 0;
+	font-size: 2rem;
+
+}
+
+.swal2-content {
+	margin: 0 -1.6rem !important;
+}

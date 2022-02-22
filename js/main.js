@@ -45,6 +45,8 @@ $(document).ready(function () {
 	const tf		= 'transform';		// CSS transform
 	const op 		= 'opacity';			// CSS opacity
 
+	const swalw = 300
+	const swal_info_c = '#3FC3EE';
 
 	var item_row_template = 
 		`<div class="item-row">
@@ -69,6 +71,8 @@ $(document).ready(function () {
 		'CardCVV': 		'',
 		'Shopping_List': []
 	};
+
+	var Shop_Lst = Cart_Object.Shopping_List;
 
 	// ****************************************************************
 	// Function 
@@ -115,17 +119,16 @@ $(document).ready(function () {
 		$Catapage.css(h, '92%');
 		$Catapage.css(tf, 'translateY(-1rem)');
 
-		var idx = Cart_Object.Shopping_List.findIndex(
-			e => e.Product	== product && e.Price == price);
+		var idx = findProduct(product, price);
 
 		if (idx > -1) {
-			var cnt = Cart_Object.Shopping_List[idx].Quantity;
+			var cnt = Shop_Lst[idx].Quantity;
 			cnt++;
-			Cart_Object.Shopping_List[idx].Quantity = cnt;
+			Shop_Lst[idx].Quantity = cnt;
 			alert(idx);
 		} else {
 			// Data Update
-			Cart_Object.Shopping_List.push({
+			Shop_Lst.push({
 				'Image': 		img,
 				'Product': 	product,
 				'Price': 		price,
@@ -133,7 +136,7 @@ $(document).ready(function () {
 			});
 		}
 
-		$Quantity.text(Cart_Object.Shopping_List.length);
+		$Quantity.text(Shop_Lst.length);
 
 		buildObject();
 		showLogo();
@@ -144,7 +147,7 @@ $(document).ready(function () {
 		$ShoppingCart.find('.container').empty();
 
 		// Add new product item
-		$.each(Cart_Object.Shopping_List, function (index, item) {
+		$.each(Shop_Lst, function (index, item) {
 			var temp = item_row_template
 				.replace('PRODUCTIMG', item.Image)
 				.replaceAll('PRODUCTNAME', item.Product)
@@ -276,11 +279,10 @@ $(document).ready(function () {
 		var product 		= $Src.prev().text();
 		var price 			= parseInt($Src.next().text().replace('$', ''));
 
-		var idx = Cart_Object.Shopping_List.findIndex(
-			i => i.Product == product && i.Price == price);
-		Cart_Object.Shopping_List[idx].Quantity = parseInt(quantity);
+		var idx = findProduct(product, price);
+		Shop_Lst[idx].Quantity = parseInt(quantity);
 
-		console.log(Cart_Object.Shopping_List);
+		console.log(Shop_Lst);
 	};
 
 	// <summary> Show delete bottom </summary>
@@ -299,6 +301,7 @@ $(document).ready(function () {
 		Swal.fire({
 			icon: 'warning',
 			title: 'Are Your Sure？',
+			confirmButtonText: 'Delete',
 			showCancelButton: true,
 		}).then((result) => {
 			if (result.isConfirmed) {
@@ -307,12 +310,11 @@ $(document).ready(function () {
 				var product = $Prodcut.find('.product').text();
 				var price 	= parseInt($Prodcut.find('.price')
 					.text().replace('$', ''));
-				var idx 		= Cart_Object.Shopping_List.findIndex(
-					e => e.Product == product && e.Price == price);
+				var idx 		= findProduct(product, price);
 
-				Cart_Object.Shopping_List.splice(idx, 1);
+				Shop_Lst.splice(idx, 1);
 
-				$Quantity.text(Cart_Object.Shopping_List.length);
+				$Quantity.text(Shop_Lst.length);
 
 				buildObject();
 				showLogo();
@@ -324,9 +326,58 @@ $(document).ready(function () {
 		});
 	};
 
+	var findProduct = (product, price) => 
+		Shop_Lst.findIndex(i => i.Product == product && i.Price == price);
+
 	// <summary> Goto Credit page </summary>
 	var goCredit 	= function () {
-		$Cart.css(l, '-100%');
+		var title_template 
+	    = `<span style='color: ${swal_info_c}'; font-weight-bold'>Bill</span>`;
+	  var bill_template = 
+	      `<ul id='Bill'>DETAIL</ul>`;
+	  var detail_template = 
+	      `<li>
+	      	<span class='num'>NUMBER</span>
+	      	<span class='product'>PRODUCTNAME</span>
+	      	<span class='cal'>CALCULATE</span>
+	      	<span class='sublabel'>Subtotal：</span>
+	      	<span class='subtotal'>$SUBTOTAL</span>
+	      </li>`;
+	  var total_template = 
+	      `<li class='total'>Total：
+	      	<span>TOTALAMOUNT</span>
+        </li>`;
+	  
+	  var bill_html   = '';
+	  var detail_html = '';
+	  var total       = 0;
+	  // Generate bill
+	  $.each(Shop_Lst, function(index, item) {
+	    detail_html += 
+	      detail_template
+	        .replace('NUMBER', index+1)
+	        .replace('PRODUCTNAME', item.Product)
+	        .replace('CALCULATE', `$${item.Price} × ${item.Quantity}`)
+	        .replace('SUBTOTAL', `${item.Quantity * item.Price}`);
+	    total += item.Quantity * item.Price;
+	  });
+	  
+	  detail_html += total_template.replace(
+	    'TOTALAMOUNT', `$${total}`);
+	  bill_html = bill_template.replace(
+	    'DETAIL', detail_html);
+	  
+	  Swal.fire({
+	    title: 	title_template,
+	    icon: 	'info',
+	    html: 	bill_html,
+	    width: 	swalw,
+	    cancelButtonText: 'Cancel',
+	    showCancelButton: true
+	  }).then((result) => {
+	    if(result.isConfirmed)
+	      $Cart.css(l, '-100%');
+	  });
 	};
 
 	// <summary> Pay on credit card </summary>
@@ -345,8 +396,6 @@ $(document).ready(function () {
 		var number 	= $CardNumber.val();
 		var expdt		= $ExpDt.val();
 		var cvv 		= $CVV.val();
-		console.log(
-			`Name = ${name}\n Number = ${number}\n ExpDt = ${expdt}\n CVV = ${cvv}`);
 
 		if (patternName.test(name) && 
 				patternNumber.test(number) && 
@@ -361,34 +410,37 @@ $(document).ready(function () {
 				}
 			}).then((result) => {
 				if(result.dismiss === Swal.DismissReason.timer)
-					window.location.reload();
+					Swal.fire('Order Finished', '', 'success')
+						.then((result) => {
+						window.location.reload();
+					});
 			});
 		} else {
 			var msg = '';
 			switch(msg == '') {
-				case patternName.test(name) == false:
+				case !patternName.test(name):
 					msg += `CardName invalid\n`;
 					$CardName.focus();
 					break;
-				case patternNumber.test(number) == false:
+				case !patternNumber.test(number):
 					msg += `CardNumber invalidn\n`;
 					$CardNumber.focus();
 					break;
-				case patternDate.test(expdt) == false:
+				case !patternDate.test(expdt):
 					msg += `Expiration Date invalid\n`;
 					$ExpDt.focus();
 					break;
-				case patternCVV.test(cvv) == false:
+				case !patternCVV.test(cvv):
 					msg += `CVV invalid\n`;
 					$CVV.focus();
 					break;
 			}
 
 			Swal.fire({
-				width: 300,
-				icon: 'error',
-				title: 'Error',
-				text: msg
+				width: 	300,
+				icon: 	'error',
+				title: 	'Error',
+				text: 	msg
 			});
 		}
 	};
@@ -402,6 +454,100 @@ $(document).ready(function () {
 			$CartLogo.css(d, 'none');
 			$CheckoutBtn.css(d, 'inline-block');
 		}
+	};
+
+	var pageLoad = function () {
+		var title 					= 'Reference';
+
+		var reference_html 	=
+      `<ul style='list-style: none; font-weight: bold; text-align: left; padding: 0;'>
+        <li style='margin-bottom: .5rem;'>
+          Product Information(image、price...)：
+          <a href='https://www.apple.com/tw/' style='text-decoration: none' target='_blank'>Apple TW</a>
+        </li>
+        <li style='margin-bottom: .5rem;'>
+          UI Design：
+          <a href='https://dribbble.com/tags/shopping_cart' style='text-decoration: none'; target:'_blank'>Dribbble Shopping Cart</a>
+        </li>
+      </ul>`;
+
+    var guideline_html = 
+    	`<div id="guideline">
+    		<div class='wrap'>
+    			<div class='row'>
+	    			<i id='Prev' class='fas fa-angle-left'></i>
+  					<i id='Next' class='fas fa-angle-right'></i>
+  				</div>
+		    	<div class="item">
+		    		<h1 class='subtitle'>Catalog</h1>
+		    		<img src='images/Guideline_Catalog.gif'/>
+	    		</div>
+		    	<div class="item">
+		    		<h1 class='subtitle'>Add Product</h1>
+		    		<p>Click plus icon, Product card</p>
+		    		<img src='images/Guideline_AddProduct.gif'/>
+	    		</div>
+		    	<div class="item">
+		    		<h1 class='subtitle'>Go to Cart</h1>
+		    		<p>Click Cart title / Quantitry<p>
+		    		<img src='images/Guideline_GotoCart.gif'/>
+	    		</div>
+		    	<div class="item">
+		    		<h1 class='subtitle'>Modify Product Quantity</h1>
+		    		<p>Click Plus, Minus, Quantiry</p>
+		    		<span>1 < Quantiry < 1000<span>
+		    		<img src='images/Guideline_ModifyQuantity.gif'/>
+	    		</div>
+		    	<div class="item">
+		    		<h1 class='subtitle'>Delete Product</h1>
+		    		<p>Click product Image then click delete button</p>
+		    		<img src='images/Guideline_Delete.gif'/>
+	    		</div>
+	    		<div class="item">
+		    		<h1 class='subtitle'>Checkout</h1>
+		    		<p>Click Checkout button => Buy Now</p>
+		    		<img src='images/Guideline_Checkout.gif'/>
+	    		</div>
+		    </div>
+			</div>`;
+
+		var wl 					= 0;
+	  Swal.fire({
+	    title: 	`<h1 style='color: ${swal_info_c}'>${title}</h1>`,
+	    icon: 	'info',
+	    html: 	reference_html,
+	    showCancelButton: true,
+	    confirmButtonText: 'See Guideline'
+	  }).then((result) => {
+	  	if(result.isConfirmed) {
+	  		title = 'Guideline';
+
+	  		Swal.fire({
+	  			title: `<h1 style='color: ${swal_info_c}'>${title}</h1>`,
+	  			icon: 'info',
+	  			width: swalw,
+	  			html: guideline_html
+	  		});
+
+	  		var $Guideline 	= $('#guideline');
+				var $Wrap				= $Guideline.find('.wrap');
+				var $Row 				= $Guideline.find('.row');
+				var $Next 			=	$('#Next');
+				var $Prev 			= $('#Prev');
+
+				$Next.on(e, function () {
+					if(wl > -500) wl -= 100;
+					$Wrap.css(l, `${wl}%`);
+					$Row.css(l, `${wl * -1}%`);
+				});
+
+				$Prev.on(e, function () {
+					if (wl < 0) wl += 100;
+					$Wrap.css(l, `${wl}%`);
+					$Row.css(l, `${wl * -1}%`);
+				});
+	  	}
+	  });
 	};
 
 	// ****************************************************************
@@ -421,4 +567,5 @@ $(document).ready(function () {
 	$ArrowLeft.on(e, goCart);
 	$BuyBtn.on(e, buy);
 	showLogo();
+	pageLoad();
 });

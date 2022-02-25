@@ -125,7 +125,6 @@ $(document).ready(function () {
 			var cnt = Shop_Lst[idx].Quantity;
 			cnt++;
 			Shop_Lst[idx].Quantity = cnt;
-			alert(idx);
 		} else {
 			// Data Update
 			Shop_Lst.push({
@@ -480,33 +479,33 @@ $(document).ready(function () {
   				</div>
 		    	<div class="item">
 		    		<h1 class='subtitle'>Catalog</h1>
-		    		<img src='images/Guideline_Catalog.gif'/>
+		    		<img src='https://i.imgur.com/ZDFSFr0.gif'/>
 	    		</div>
 		    	<div class="item">
 		    		<h1 class='subtitle'>Add Product</h1>
 		    		<p>Click plus icon, Product card</p>
-		    		<img src='images/Guideline_AddProduct.gif'/>
+		    		<img src='https://i.imgur.com/L5Gvh91.gif'/>
 	    		</div>
 		    	<div class="item">
 		    		<h1 class='subtitle'>Go to Cart</h1>
 		    		<p>Click Cart title / Quantitry<p>
-		    		<img src='images/Guideline_GotoCart.gif'/>
+		    		<img src='https://i.imgur.com/paDz0e6.gif'/>
 	    		</div>
 		    	<div class="item">
 		    		<h1 class='subtitle'>Modify Product Quantity</h1>
 		    		<p>Click Plus, Minus, Quantiry</p>
 		    		<span>1 < Quantiry < 1000<span>
-		    		<img src='images/Guideline_ModifyQuantity.gif'/>
+		    		<img src='https://i.imgur.com/hnDvqbN.gif'/>
 	    		</div>
 		    	<div class="item">
 		    		<h1 class='subtitle'>Delete Product</h1>
 		    		<p>Click product Image then click delete button</p>
-		    		<img src='images/Guideline_Delete.gif'/>
+		    		<img src='https://i.imgur.com/hyw8DHr.gif'/>
 	    		</div>
 	    		<div class="item">
 		    		<h1 class='subtitle'>Checkout</h1>
 		    		<p>Click Checkout button => Buy Now</p>
-		    		<img src='images/Guideline_Checkout.gif'/>
+		    		<img src='https://i.imgur.com/PMaW0E0.gif'/>
 	    		</div>
 		    </div>
 			</div>`;
